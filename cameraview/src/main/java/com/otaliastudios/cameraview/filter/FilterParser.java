@@ -3,9 +3,8 @@ package com.otaliastudios.cameraview.filter;
 import android.content.res.TypedArray;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
-import com.otaliastudios.cameraview.R;
+import com.geocomply.idcomplysdk.R;
 
 /**
  * Parses filters from XML attributes.

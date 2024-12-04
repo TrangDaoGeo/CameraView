@@ -2,12 +2,12 @@ package com.otaliastudios.cameraview.size;
 
 import android.content.res.TypedArray;
 
-import com.otaliastudios.cameraview.R;
+import androidx.annotation.NonNull;
+
+import com.geocomply.idcomplysdk.R;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
 
 /**
  * Parses size selectors from XML attributes.

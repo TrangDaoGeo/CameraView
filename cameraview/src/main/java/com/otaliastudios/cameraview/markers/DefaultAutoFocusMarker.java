@@ -8,11 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.otaliastudios.cameraview.R;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
+
+import com.geocomply.idcomplysdk.R;
 
 /**
  * A default implementation of {@link AutoFocusMarker}.
