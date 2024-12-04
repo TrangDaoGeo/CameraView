@@ -1989,6 +1989,11 @@ public class CameraView extends FrameLayout implements LifecycleObserver {
         return mCameraEngine.getPictureSize(Reference.OUTPUT);
     }
 
+    @Nullable
+    public Size getPreviewStreamSize() {
+        return mCameraEngine.getPreviewStreamSize(Reference.OUTPUT);
+    }
+
     /**
      * Returns the size used for videos taken with {@link #takeVideo(File)},
      * or null if it hasn't been computed (for example if the surface is not ready),
