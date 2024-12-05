@@ -11,7 +11,6 @@ import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
-import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
@@ -1611,7 +1610,7 @@ public class Camera2Engine extends CameraBaseEngine implements
                                         @NonNull MeteringRectangle regions) {
         Integer maxRegionsAE = mCameraCharacteristics.get(CameraCharacteristics.CONTROL_MAX_REGIONS_AE);
         if (maxRegionsAE != null && maxRegionsAE > 0) {
-            builder.set(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_OFF);
+//            builder.set(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_OFF);
             builder.set(CaptureRequest.CONTROL_AE_REGIONS, new MeteringRectangle[]{regions});
             return true;
         }
