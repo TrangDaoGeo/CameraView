@@ -1,16 +1,16 @@
 package com.otaliastudios.cameraview.preview;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+
+import com.geocomply.idcomplysdk.R;
 import com.otaliastudios.cameraview.CameraLogger;
-import com.otaliastudios.cameraview.R;
 
 /**
  * This is the fallback preview when hardware acceleration is off, and is the last resort.

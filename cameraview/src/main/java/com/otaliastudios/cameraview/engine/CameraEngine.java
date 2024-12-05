@@ -2,11 +2,14 @@ package com.otaliastudios.cameraview.engine;
 
 import android.content.Context;
 import android.graphics.PointF;
+import android.hardware.camera2.params.MeteringRectangle;
 import android.location.Location;
-
-
 import android.os.Handler;
 import android.os.Looper;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -17,36 +20,32 @@ import com.otaliastudios.cameraview.CameraException;
 import com.otaliastudios.cameraview.CameraLogger;
 import com.otaliastudios.cameraview.CameraOptions;
 import com.otaliastudios.cameraview.PictureResult;
+import com.otaliastudios.cameraview.VideoResult;
+import com.otaliastudios.cameraview.controls.Audio;
 import com.otaliastudios.cameraview.controls.AudioCodec;
+import com.otaliastudios.cameraview.controls.Facing;
+import com.otaliastudios.cameraview.controls.Flash;
+import com.otaliastudios.cameraview.controls.Hdr;
+import com.otaliastudios.cameraview.controls.Mode;
 import com.otaliastudios.cameraview.controls.PictureFormat;
+import com.otaliastudios.cameraview.controls.VideoCodec;
+import com.otaliastudios.cameraview.controls.WhiteBalance;
+import com.otaliastudios.cameraview.engine.offset.Angles;
+import com.otaliastudios.cameraview.engine.offset.Reference;
 import com.otaliastudios.cameraview.engine.orchestrator.CameraOrchestrator;
 import com.otaliastudios.cameraview.engine.orchestrator.CameraState;
 import com.otaliastudios.cameraview.engine.orchestrator.CameraStateOrchestrator;
-import com.otaliastudios.cameraview.metering.MeteringRegions;
-import com.otaliastudios.cameraview.overlay.Overlay;
-import com.otaliastudios.cameraview.VideoResult;
-import com.otaliastudios.cameraview.engine.offset.Angles;
-import com.otaliastudios.cameraview.engine.offset.Reference;
 import com.otaliastudios.cameraview.frame.Frame;
 import com.otaliastudios.cameraview.frame.FrameManager;
+import com.otaliastudios.cameraview.gesture.Gesture;
 import com.otaliastudios.cameraview.internal.WorkerHandler;
+import com.otaliastudios.cameraview.metering.MeteringRegions;
+import com.otaliastudios.cameraview.overlay.Overlay;
 import com.otaliastudios.cameraview.picture.PictureRecorder;
 import com.otaliastudios.cameraview.preview.CameraPreview;
-import com.otaliastudios.cameraview.controls.Audio;
-import com.otaliastudios.cameraview.controls.Facing;
-import com.otaliastudios.cameraview.controls.Flash;
-import com.otaliastudios.cameraview.gesture.Gesture;
-import com.otaliastudios.cameraview.controls.Hdr;
-import com.otaliastudios.cameraview.controls.Mode;
-import com.otaliastudios.cameraview.controls.VideoCodec;
-import com.otaliastudios.cameraview.controls.WhiteBalance;
 import com.otaliastudios.cameraview.size.Size;
 import com.otaliastudios.cameraview.size.SizeSelector;
 import com.otaliastudios.cameraview.video.VideoRecorder;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -710,6 +709,8 @@ public abstract class CameraEngine implements
     public abstract void startAutoFocus(@Nullable Gesture gesture,
                                         @NonNull MeteringRegions regions,
                                         @NonNull PointF legacyPoint);
+
+    public void setControlAERegions(MeteringRectangle region) {}
 
     public abstract void setPlaySounds(boolean playSounds);
 

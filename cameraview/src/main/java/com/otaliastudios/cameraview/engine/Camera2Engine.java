@@ -14,6 +14,7 @@ import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
+import android.hardware.camera2.params.MeteringRectangle;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.location.Location;
 import android.media.Image;
@@ -1585,6 +1586,35 @@ public class Camera2Engine extends CameraBaseEngine implements
                 });
             }
         });
+    }
+
+    @Override
+    public void setControlAERegions(MeteringRectangle region) {
+        getOrchestrator().scheduleStateful(
+                "AE Regions (" + region + ")",
+                CameraState.PREVIEW,
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        if (applyAERegion(mRepeatingRequestBuilder, region)) {
+                            applyRepeatingRequestBuilder();
+                        }
+                    }
+                });
+
+//        mRepeatingRequestBuilder.set(CaptureRequest.CONTROL_AE_REGIONS, new MeteringRectangle[]{region});
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    protected boolean applyAERegion(@NonNull CaptureRequest.Builder builder,
+                                        @NonNull MeteringRectangle regions) {
+        Integer maxRegionsAE = mCameraCharacteristics.get(CameraCharacteristics.CONTROL_MAX_REGIONS_AE);
+        if (maxRegionsAE != null && maxRegionsAE > 0) {
+//            builder.set(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_OFF);
+            builder.set(CaptureRequest.CONTROL_AE_REGIONS, new MeteringRectangle[]{regions});
+            return true;
+        }
+        return false;
     }
 
     @NonNull
