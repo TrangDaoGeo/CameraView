@@ -17,6 +17,7 @@ import android.content.res.TypedArray;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.hardware.camera2.params.MeteringRectangle;
 import android.location.Location;
 import android.media.MediaActionSound;
 import android.os.Build;
@@ -1408,6 +1409,11 @@ public class CameraView extends FrameLayout implements LifecycleObserver {
         PointF point = new PointF(x, y);
         MeteringRegions regions = MeteringRegions.fromPoint(size, point);
         mCameraEngine.startAutoFocus(null, regions, point);
+    }
+
+    public void setControlAERegions(Rect region) {
+        MeteringRectangle rectangle = new MeteringRectangle(region, MeteringRectangle.METERING_WEIGHT_MAX);
+        mCameraEngine.setControlAERegions(rectangle);
     }
 
     /**

@@ -8,7 +8,10 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Build;
-import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.exifinterface.media.ExifInterface;
 
 import com.otaliastudios.cameraview.PictureResult;
 import com.otaliastudios.cameraview.controls.PictureFormat;
@@ -24,10 +27,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.exifinterface.media.ExifInterface;
 
 /**
  * A {@link PictureResult} that uses standard APIs.
