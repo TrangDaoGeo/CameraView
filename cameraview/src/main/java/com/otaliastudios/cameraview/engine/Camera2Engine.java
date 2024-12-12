@@ -302,7 +302,9 @@ public class Camera2Engine extends CameraBaseEngine implements
                                        @NonNull TotalCaptureResult result) {
             mLastRepeatingResult = result;
             for (Action action : mActions) {
-                action.onCaptureCompleted(Camera2Engine.this, request, result);
+                if (action != null) {
+                    action.onCaptureCompleted(Camera2Engine.this, request, result);
+                }
             }
         }
     };
@@ -461,7 +463,7 @@ public class Camera2Engine extends CameraBaseEngine implements
                         // This happened while the engine is running. Throw unrecoverable exception
                         // so that engine is properly destroyed.
                         LOG.e("CameraDevice.StateCallback reported an error:", error);
-                        throw new CameraException(CameraException.REASON_DISCONNECTED);
+                         throw new CameraException(CameraException.REASON_DISCONNECTED);
                     }
                 }
             }, null);
@@ -1035,6 +1037,8 @@ public class Camera2Engine extends CameraBaseEngine implements
                     oldBuilder.get(CaptureRequest.CONTROL_AWB_REGIONS));
             builder.set(CaptureRequest.CONTROL_AF_MODE,
                     oldBuilder.get(CaptureRequest.CONTROL_AF_MODE));
+            builder.set(CaptureRequest.CONTROL_AE_MODE,
+                    oldBuilder.get(CaptureRequest.CONTROL_AE_MODE));
             // Do NOT copy exposure or focus triggers!
         }
     }
@@ -1611,6 +1615,8 @@ public class Camera2Engine extends CameraBaseEngine implements
         Integer maxRegionsAE = mCameraCharacteristics.get(CameraCharacteristics.CONTROL_MAX_REGIONS_AE);
         if (maxRegionsAE != null && maxRegionsAE > 0) {
 //            builder.set(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_OFF);
+//            builder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, 12_500_000L);
+//            builder.set(CaptureRequest.CONTROL_AWB_MODE, CameraMetadata.CONTROL_AWB_MODE_AUTO);
             builder.set(CaptureRequest.CONTROL_AE_REGIONS, new MeteringRectangle[]{regions});
             return true;
         }

@@ -3,14 +3,14 @@ package com.otaliastudios.cameraview.frame;
 
 import android.graphics.ImageFormat;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.otaliastudios.cameraview.CameraLogger;
 import com.otaliastudios.cameraview.engine.offset.Angles;
 import com.otaliastudios.cameraview.engine.offset.Axis;
 import com.otaliastudios.cameraview.engine.offset.Reference;
 import com.otaliastudios.cameraview.size.Size;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
