@@ -266,8 +266,7 @@ public class CameraUtils {
         return decodeBitmap(source, maxWidth, maxHeight, options, -1);
     }
 
-    // Null means we got OOM
-    // Ignores flipping, but it should be super rare.
+    // Null means we got OOM. Handles image rotation and flipping based on EXIF metadata.
     @SuppressWarnings("TryFinallyCanBeTryWithResources")
     @Nullable
     private static Bitmap decodeBitmap(@NonNull byte[] source,
@@ -278,7 +277,7 @@ public class CameraUtils {
         if (maxWidth <= 0) maxWidth = Integer.MAX_VALUE;
         if (maxHeight <= 0) maxHeight = Integer.MAX_VALUE;
         int orientation;
-        boolean flip;
+        Matrix transform = null;
         if (rotation == -1) {
             InputStream stream = null;
             try {
@@ -288,15 +287,12 @@ public class CameraUtils {
                 int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
                         ExifInterface.ORIENTATION_NORMAL);
                 orientation = ExifHelper.getOrientation(exifOrientation);
-                flip = exifOrientation == ExifInterface.ORIENTATION_FLIP_HORIZONTAL ||
-                        exifOrientation == ExifInterface.ORIENTATION_FLIP_VERTICAL ||
-                        exifOrientation == ExifInterface.ORIENTATION_TRANSPOSE ||
-                        exifOrientation == ExifInterface.ORIENTATION_TRANSVERSE;
+                transform = exifToMatrix(exifOrientation);
                 LOG.i("decodeBitmap:", "got orientation from EXIF.", orientation);
             } catch (IOException e) {
                 LOG.e("decodeBitmap:", "could not get orientation from EXIF.", e);
                 orientation = 0;
-                flip = false;
+                transform = null;
             } finally {
                 if (stream != null) {
                     try {
@@ -306,7 +302,10 @@ public class CameraUtils {
             }
         } else {
             orientation = rotation;
-            flip = false;
+            if (rotation != 0) {
+                transform = new Matrix();
+                transform.setRotate(rotation);
+            }
             LOG.i("decodeBitmap:", "got orientation from constructor.", orientation);
         }
 
@@ -332,18 +331,54 @@ public class CameraUtils {
                 bitmap = BitmapFactory.decodeByteArray(source, 0, source.length);
             }
 
-            if (orientation != 0 || flip) {
-                Matrix matrix = new Matrix();
-                matrix.setRotate(orientation);
+            if (transform != null && !transform.isIdentity()) {
                 Bitmap temp = bitmap;
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
-                        bitmap.getHeight(), matrix, true);
+                        bitmap.getHeight(), transform, true);
                 temp.recycle();
             }
         } catch (OutOfMemoryError e) {
             bitmap = null;
         }
         return bitmap;
+    }
+
+    /**
+     * Creates a matrix that applies the correct transformation for the given
+     * EXIF orientation value.
+     */
+    @NonNull
+    private static Matrix exifToMatrix(int exifOrientation) {
+        Matrix matrix = new Matrix();
+        switch (exifOrientation) {
+            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
+                matrix.setScale(-1f, 1f);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                matrix.setRotate(180f);
+                break;
+            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
+                matrix.setScale(1f, -1f);
+                break;
+            case ExifInterface.ORIENTATION_TRANSPOSE:
+                matrix.setRotate(90f);
+                matrix.postScale(-1f, 1f);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                matrix.setRotate(90f);
+                break;
+            case ExifInterface.ORIENTATION_TRANSVERSE:
+                matrix.setRotate(-90f);
+                matrix.postScale(-1f, 1f);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                matrix.setRotate(-90f);
+                break;
+            default:
+                // ORIENTATION_NORMAL and unknown cases: no transformation
+                break;
+        }
+        return matrix;
     }
 
     private static int computeSampleSize(int width, int height, int maxWidth, int maxHeight) {
